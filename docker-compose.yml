@@ -1,0 +1,42 @@
+version: '2'
+services:
+  order:
+    container_name: order
+    build:
+      context: order/
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - jaeger
+
+  warehouse:
+    container_name: warehouse
+    build:
+      context: warehouse/
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    depends_on:
+      - order
+      - jaeger
+
+  finance:
+    container_name: finance
+    build:
+      context: finance/
+      dockerfile: Dockerfile
+    ports:
+      - 8082:8082
+    depends_on:
+      - warehouse
+      - jaeger
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686" # the jaeger UI
+      - "4317:4317" # the OpenTelemetry collector grpc
+      - "4318:4318" # the OpenTelemetry collector http
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
