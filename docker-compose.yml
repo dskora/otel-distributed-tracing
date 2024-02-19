@@ -10,6 +10,9 @@ services:
     depends_on:
       - mysql
       - jaeger
+    environment:
+      - JAVA_OPTS=${JAVA_OPTS}
+      - SERVICE_NAME=order-service
 
   warehouse:
     container_name: warehouse
@@ -22,6 +25,9 @@ services:
       - order
       - jaeger
       - kafka
+    environment:
+      - JAVA_OPTS=${JAVA_OPTS}
+      - SERVICE_NAME=warehouse-service
 
   finance:
     container_name: finance
@@ -34,6 +40,9 @@ services:
       - warehouse
       - jaeger
       - kafka
+    environment:
+      - JAVA_OPTS=${JAVA_OPTS}
+      - SERVICE_NAME=finance-service
 
   mysql:
     image: mysql:5.7
